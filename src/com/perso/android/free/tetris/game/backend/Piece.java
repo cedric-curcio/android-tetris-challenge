@@ -23,6 +23,12 @@ public class Piece {
 		mShape = shape;
 	}
 
+	public Piece(Piece currentPiece) {
+		mX = currentPiece.getX();
+		mY = currentPiece.getY();
+		mShape = currentPiece.getShape();
+	}
+
 	/**
 	 * Rotate the piece 90° to the right
 	 */
@@ -41,7 +47,7 @@ public class Piece {
 		//set it as the member shape
 		mShape = tmpShape;
 	}
-
+	
 	public void moveDown(){
 		mY++;
 	}

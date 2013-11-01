@@ -102,11 +102,11 @@ public class GameRules {
 	 * @param dy
 	 * @return
 	 */
-	public boolean isCollision(int dx, int dy){
+	public boolean isCollision(Piece piece, int dx, int dy){
 		boolean [][] board = Board.getInstance().getBoard();
-		for(int j = 0; j<mCurrentPiece.getShapeHeightLength() ;j++){
-			for(int i = 0; i<mCurrentPiece.getShapeWidthLength() ;i++){
-				if(board[j+mCurrentPiece.getY()+dy][i+mCurrentPiece.getX()+dx]==mCurrentPiece.getShape()[j][i]){
+		for(int j = 0; j<piece.getShapeHeightLength() ;j++){
+			for(int i = 0; i<piece.getShapeWidthLength() ;i++){
+				if(board[j+piece.getY()+dy][i+piece.getX()+dx]==piece.getShape()[j][i]){
 					return true;
 				}
 			}
@@ -115,19 +115,19 @@ public class GameRules {
 	}
 
 	public void moveLeft(){
-		if(mCurrentPiece.getX()>0 && !isCollision(-1,0)){
+		if(mCurrentPiece.getX()>0 && !isCollision(mCurrentPiece, -1, 0)){
 			mCurrentPiece.moveLeft();
 		}
 	}
 
 	public void moveRight(){
-		if(mCurrentPiece.getX()+mCurrentPiece.getShapeWidthLength() < Board.getInstance().getWidthUnit() && !isCollision(1,0)){
+		if(mCurrentPiece.getX()+mCurrentPiece.getShapeWidthLength() < Board.getInstance().getWidthUnit() && !isCollision(mCurrentPiece, 1, 0)){
 			mCurrentPiece.moveRight();
 		}
 	}
 
 	public boolean canMoveDown(){
-		if(mCurrentPiece.getY()+mCurrentPiece.getShapeHeightLength()< Board.getInstance().getHeightUnit() && !isCollision(0, 1)){
+		if(mCurrentPiece.getY()+mCurrentPiece.getShapeHeightLength()< Board.getInstance().getHeightUnit() && !isCollision(mCurrentPiece, 0, 1)){
 			return true;
 		}
 		return false;
@@ -137,6 +137,16 @@ public class GameRules {
 		if(canMoveDown()){
 			mCurrentPiece.moveDown();
 		}
+	}
+
+	public void rotate() {
+		//make a copy, rotate it, test if there is a collision, if no collision we can rotate the real piece
+		Piece p = new Piece(mCurrentPiece);
+		p.rotatePiece();
+		if(!isCollision(p, 0, 0)){
+			mCurrentPiece.rotatePiece();
+		}
+		
 	}
 
 }

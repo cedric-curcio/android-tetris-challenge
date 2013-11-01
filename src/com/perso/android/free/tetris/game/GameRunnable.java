@@ -10,10 +10,13 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 
 import com.perso.android.free.tetris.game.event.GameEvent;
+import com.perso.android.free.tetris.game.event.RotateEvent;
 import com.perso.android.free.tetris.game.view.GameView;
 
 /**
- * The game loop & behavior.
+ * The game loop & behavior. 
+ * We use a ConcurrentLinkedQueue<GameEvent> mEventQueue to store the events. 
+ * And we process them every 33 ms.
  * @author cedric
  *
  */
@@ -163,8 +166,9 @@ public class GameRunnable implements Runnable {
 				if(event == null){
 					break;
 				}
-				//				else if(event instanceof ReceiverRunEvent){
-				//				}
+				else if(event instanceof RotateEvent){
+					mGameRules.rotate();
+				}
 			}
 			//post the next event depending of current situation
 			//or change the situation if needed
