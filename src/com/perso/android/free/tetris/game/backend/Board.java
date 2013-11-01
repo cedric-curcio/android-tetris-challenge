@@ -32,8 +32,11 @@ public class Board {
 		mWidthUnit = w;
 		mHeightUnit = h;
 		mBoard  = new boolean[h][];
-		for (int i = 0; i<h ; i++){
-			mBoard[i] = new boolean[w];
+		for (int j = 0; j<h ; j++){
+			mBoard[j] = new boolean[w];
+			for(int i = 0 ; i < w;i++){
+				mBoard[j][i] = false;
+			}
 		}
 	}
 	

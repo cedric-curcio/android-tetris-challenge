@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-import com.perso.android.free.tetris.engine.SoundManager;
 import com.perso.android.free.tetris.game.event.GameEvent;
 import com.perso.android.free.tetris.game.view.GameView;
 
@@ -21,10 +20,6 @@ import com.perso.android.free.tetris.game.view.GameView;
 public class GameRunnable implements Runnable {
 
 	private static final String TAG = GameRunnable.class.getSimpleName();
-
-	private static final boolean TEST_MODE = false;
-	private static final boolean TESTING_GAME_OVER = false;
-	private int accessCounter = 0;
 
 	/**
 	 *  Game state constants.
@@ -69,7 +64,7 @@ public class GameRunnable implements Runnable {
 	private Handler mLoopHandler = new Handler();
 
 	private Context mContext;
-	private GameRules mRaceRules;
+	private GameRules mGameRules;
 
 	private boolean mIsInBackground = false;
 	private boolean mHasNeverBeenUsed = true;
@@ -78,15 +73,9 @@ public class GameRunnable implements Runnable {
 		mContext = c;
 		mGameView = v;
 		mSurfaceHolder = surfaceHolder;
-		mRaceRules = new GameRules(c);
+		mGameRules = new GameRules(c);
 		setState(STATE_LOADING);
 		mTimer = new Timer();
-		//load the sound
-		SoundManager sm = SoundManager.getInstance();
-		if(!sm.isInit()){
-			sm.init(mContext);
-		}
-		//		sm.addSound(R.raw.metalbathit_loud);
 	}
 
 	@Override
@@ -107,9 +96,6 @@ public class GameRunnable implements Runnable {
 			else if(mGameState == STATE_GAME_OVER){
 			}
 			else if (mGameState == STATE_RUNNING) {
-				if(TEST_MODE){
-					doTestScenario();
-				}
 				updateGameState();
 			}
 			//draw
@@ -145,13 +131,6 @@ public class GameRunnable implements Runnable {
 		}
 	}
 
-
-	private void doTestScenario() {
-		accessCounter++;
-		if(TESTING_GAME_OVER && accessCounter>8){
-		}
-	}
-
 	private void finishActivity(){
 		Log.d(TAG, "method finishActivity");
 		((GameActivity)mContext).finish();
@@ -163,7 +142,7 @@ public class GameRunnable implements Runnable {
 		deltaPausedTime=0;
 		mNowTime = 0;
 
-		// init ia
+		mGameRules.initBoard();
 
 		//start the game
 		mReDraw = true;

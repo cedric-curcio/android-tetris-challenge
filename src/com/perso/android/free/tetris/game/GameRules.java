@@ -33,7 +33,7 @@ public class GameRules {
 	/**
 	 * Here we load the board.
 	 */
-	public void initGame(){
+	public void initBoard(){
 		int w = ((GameActivity)mContext).getIntent().getIntExtra("boardWidth", -1);
 		int h = ((GameActivity)mContext).getIntent().getIntExtra("boardWeight", -1);
 		if(w <= 5 || h <= 5 ){
