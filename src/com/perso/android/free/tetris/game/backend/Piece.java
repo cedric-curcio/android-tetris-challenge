@@ -42,6 +42,19 @@ public class Piece {
 		mShape = tmpShape;
 	}
 
+	public void moveDown(){
+		mY++;
+	}
+	
+	public void moveLeft(){
+		mX--;
+	}
+	
+	public void moveRight(){
+		mY++;
+	}
+	
+
 	public int getX() {
 		return mX;
 	}
