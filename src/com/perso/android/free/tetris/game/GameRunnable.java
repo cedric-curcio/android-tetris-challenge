@@ -1,4 +1,4 @@
-package com.perso.android.free.wordrace.game;
+package com.perso.android.free.tetris.game;
 
 import java.util.Timer;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -9,9 +9,9 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-import com.perso.android.free.wordrace.engine.SoundManager;
-import com.perso.android.free.wordrace.game.event.GameEvent;
-import com.perso.android.free.wordrace.game.view.GameView;
+import com.perso.android.free.tetris.engine.SoundManager;
+import com.perso.android.free.tetris.game.event.GameEvent;
+import com.perso.android.free.tetris.game.view.GameView;
 
 /**
  * The game loop & behavior.

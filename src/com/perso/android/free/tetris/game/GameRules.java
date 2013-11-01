@@ -1,6 +1,6 @@
-package com.perso.android.free.wordrace.game;
+package com.perso.android.free.tetris.game;
 
-import com.perso.android.free.wordrace.game.view.GameView;
+import com.perso.android.free.tetris.game.view.GameView;
 
 import android.content.Context;
 

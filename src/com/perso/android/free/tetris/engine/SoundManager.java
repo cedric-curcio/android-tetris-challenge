@@ -1,4 +1,4 @@
-package com.perso.android.free.wordrace.engine;
+package com.perso.android.free.tetris.engine;
 
 import java.util.HashMap;
 

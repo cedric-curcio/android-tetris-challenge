@@ -1,4 +1,4 @@
-package com.perso.android.free.wordrace.game;
+package com.perso.android.free.tetris.game;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -12,8 +12,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.ads.AdView;
-import com.perso.android.free.wordrace.R;
-import com.perso.android.free.wordrace.game.view.GameView;
+import com.perso.android.free.tetris.R;
+import com.perso.android.free.tetris.game.view.GameView;
 
 /**
  * Game activity.

@@ -1,4 +1,4 @@
-package com.perso.android.free.wordrace.game.backend;
+package com.perso.android.free.tetris.game.backend;
 
 /**
  * A tetris piece.

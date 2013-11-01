@@ -1,4 +1,4 @@
-package com.perso.android.free.wordrace;
+package com.perso.android.free.tetris;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,8 +9,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.perso.android.free.wordrace.engine.SoundManager;
-import com.perso.android.free.wordrace.game.GameActivity;
+import com.perso.android.free.tetris.engine.SoundManager;
+import com.perso.android.free.tetris.game.GameActivity;
 
 public class HomeActivity extends Activity implements View.OnClickListener{
 

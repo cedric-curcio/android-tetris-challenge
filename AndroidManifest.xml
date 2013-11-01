@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.perso.android.free.wordrace"
+    package="com.perso.android.free.tetris"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -12,7 +12,7 @@
         android:label="@string/appName"
         android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
         <activity
-            android:name=".HomeActivity"
+            android:name="com.perso.android.free.tetris.HomeActivity"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,8 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".game.GameActivity"
+        <activity android:name=".game.GameActivity"
             android:label="@string/appName"
             android:screenOrientation="portrait" >
         </activity>

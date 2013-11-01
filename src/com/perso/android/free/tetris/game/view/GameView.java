@@ -1,4 +1,4 @@
-package com.perso.android.free.wordrace.game.view;
+package com.perso.android.free.tetris.game.view;
 
 import java.util.ArrayList;
 
@@ -17,9 +17,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.Window;
 
-import com.perso.android.free.wordrace.R;
-import com.perso.android.free.wordrace.game.GameActivity;
-import com.perso.android.free.wordrace.game.GameRunnable;
+import com.perso.android.free.tetris.R;
+import com.perso.android.free.tetris.game.GameActivity;
+import com.perso.android.free.tetris.game.GameRunnable;
 
 /**
  * The game view where the field, 
