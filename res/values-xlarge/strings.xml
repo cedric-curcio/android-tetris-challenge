@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ne doit pas etre présent dans les autres -->
+    <string name="isXlarge">true</string>
+
+</resources>
