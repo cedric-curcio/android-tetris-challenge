@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.perso.android.free.tetris.game.backend.Board;
 import com.perso.android.free.tetris.game.backend.Piece;
+import com.perso.android.free.tetris.game.event.GameOverEvent;
+import com.perso.android.free.tetris.game.event.GeneratePieceEvent;
 import com.perso.android.free.tetris.game.view.GameView;
 
 
@@ -60,6 +62,7 @@ public class GameRules {
 
 		if(isGameOver()){
 			//do stuff like send gameover event
+			mGameRunnable.sendGameEvent(new GameOverEvent());
 		}
 		else {
 			//fix the piece on the board
@@ -76,7 +79,7 @@ public class GameRules {
 				}
 			}
 			//generate new piece with a event
-			
+			mGameRunnable.sendGameEvent(new GeneratePieceEvent());
 		}
 	}
 
