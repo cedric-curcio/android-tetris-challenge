@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="appName">Word Race</string>
+    <string name="appName">Tetris Challenge</string>
     <string name="homeStartTxt">Start</string>
-    <string name="homeAboutTxtPlay">Producted and developped by\n\nCédric Curcio\n\n\n\nDesigned and Art by\n\nChristelle Curcio</string>
-    
+    <string name="homeInputHeight">Set the height</string>
+    <string name="homeInputWidth">Set the width</string>
     <string name="loadText">Loading</string>
-    
-    <string name="matchWins">Wins</string>
-    <string name="matchTie">Tie</string>
-    <string name="matchYouWin">You Win</string>
-    <string name="matchYouLoose">You Loose</string>
-    <string name="matchGameOver">Game Over</string>
-    <string name="matchOverButton">OK</string>
+    <string name="gameScoreTxt">Score : </string>
 
-     <string name="gameScoreTxt">Score : </string>
-    
-    
 </resources>

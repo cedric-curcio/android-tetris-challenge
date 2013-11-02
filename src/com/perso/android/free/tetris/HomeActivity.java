@@ -2,27 +2,25 @@ package com.perso.android.free.tetris;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.EditText;
 
 import com.perso.android.free.tetris.game.GameActivity;
 
+/**
+ * Entrance activity.
+ * 
+ * @author ced
+ *
+ */
 public class HomeActivity extends Activity implements View.OnClickListener{
 
 	private static final String TAG = HomeActivity.class.getSimpleName();
-	// the info start button
-	private ImageView mAboutInfoButton;
-	// the exhibition button
 	private Button mStartButton;
-	// the history button
-	private Button mHistoryButton;
-	//the hidden about view
-	private TextView mAboutView;
 
+	private EditText mEditWidth, mEditHeight;
 
 	/**
 	 * Required method from parent class
@@ -36,27 +34,20 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 		mStartButton = (Button)findViewById(R.id.homeStartButton);
 		mStartButton.setOnClickListener(this);
 
-		mAboutInfoButton = (ImageView)findViewById(R.id.homeInfoButton);
-		mAboutInfoButton.setOnClickListener(this);
-		mAboutView = (TextView) findViewById(R.id.homeAboutInfoTextId);
-		mAboutView.setOnClickListener(this);
+		mEditWidth = (EditText)findViewById(R.id.homeEditTextWidth);
+		mEditHeight = (EditText)findViewById(R.id.homeEditTextHeight);
 		
 	}
 
 	@Override
 	public void onClick(View v) {
 		Intent intent;
-		if(v == mAboutInfoButton){
-//			SoundManager.getInstance().playSound(R.raw.woodbathit_asbutton);
-			mAboutView.setVisibility(View.VISIBLE);
-		}
-		else if(v == mAboutView){
-			mAboutView.setVisibility(View.INVISIBLE);
-		}
-		else if(v == mStartButton){
+		 if(v == mStartButton){
 			
 			//start option activity
 			intent = new Intent(this, GameActivity.class);
+			intent.putExtra("boardWidth", Integer.parseInt(mEditWidth.getText().toString()));
+			intent.putExtra("boardHeight", Integer.parseInt(mEditHeight.getText().toString()));
 			startActivity(intent);
 		}
 	}

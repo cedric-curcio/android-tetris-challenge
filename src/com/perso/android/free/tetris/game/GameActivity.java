@@ -24,37 +24,23 @@ import com.perso.android.free.tetris.game.view.GameView;
  */
 public class GameActivity extends Activity implements View.OnClickListener{
 	private static final String TAG = GameActivity.class.getName();
-	//pub :
-	private AdView adView;
 	
 	private GameRunnable mGameRunnable;
-	private GameView mRaceView;
-	private Button mPauseButton, mMatchOverButton ;
+	private GameView mGameView;
+	private Button mPauseButton ;
 
-	private TextView mYouWinTextView, mYouLooseTextView, mChooseBonusTextView, mGameOverTextView;
-	private TextView mCurrentScoreTextView;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		
-		setContentView(R.layout.game_activity_layout_ad_bottom);
+		setContentView(R.layout.game_activity_layout);
 
-		mRaceView = (GameView)findViewById(R.id.BaseBallViewId);
-		mGameRunnable = mRaceView.getThread();
+		mGameView = (GameView)findViewById(R.id.GameViewId);
+		mGameRunnable = mGameView.getThread();
 
-		mPauseButton = (Button)findViewById(R.id.pauseButtonId);
-		mPauseButton.setOnClickListener(this);
-		mMatchOverButton = (Button)findViewById(R.id.buttonMatchOver);
-		mMatchOverButton.setOnClickListener(this);
-		mYouWinTextView = (TextView)findViewById(R.id.matchYouWinTextViewId);
-		mYouLooseTextView = (TextView)findViewById(R.id.matchYouLooseTextViewId);
-		mGameOverTextView = (TextView)findViewById(R.id.matchGameOverTextViewId);
-		mCurrentScoreTextView = (TextView)findViewById(R.id.gameRoundId);
-
-		//pub :
-		adView = (AdView)this.findViewById(R.id.adView);
-		adView.setBackgroundColor(Color.BLACK);
+//		mPauseButton = (Button)findViewById(R.id.pauseButtonId);
+//		mPauseButton.setOnClickListener(this);
 	}
 
 	@Override
@@ -64,35 +50,11 @@ public class GameActivity extends Activity implements View.OnClickListener{
 				mGameRunnable.unPause();
 				mPauseButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.pause));
 			}
-			else if(mRaceView.getThread().getState() == GameRunnable.STATE_RUNNING){
+			else if(mGameView.getThread().getState() == GameRunnable.STATE_RUNNING){
 				mGameRunnable.pause();
 				mPauseButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.play));
 			}
 		}
-		else if(v == mMatchOverButton){
-			finish();
-		}
-		
-	}
-
-
-	@Override
-	public void onAttachedToWindow() {
-		super.onAttachedToWindow();
-	}
-
-	public void myRefresh() {
-		//invalidate ui
-		Log.d(TAG, "called refresh");
-		mPauseButton.setVisibility(View.GONE);
-		Handler handler = new Handler(Looper.getMainLooper());
-		handler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				findViewById(R.id.rootActivityId).requestLayout();
-				mPauseButton.setVisibility(View.VISIBLE);
-			}
-		},1000);
 	}
 
 	@Override
@@ -106,37 +68,10 @@ public class GameActivity extends Activity implements View.OnClickListener{
 	protected void onDestroy() {
 		super.onDestroy();
 		Log.d(TAG, "asked to destroy activity");
-		mRaceView.cleanUp();
+		mGameView.cleanUp();
 		mGameRunnable.setInBackground(false);
 
 	}
 
-	public void setTextWinner(){
-
-		Handler handler = new Handler(Looper.getMainLooper());
-		handler.post(new Runnable() {
-			@Override
-			public void run() {
-//				Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.you_win_loose_anim);
-//					SoundManager.getInstance().playSound(R.raw.ambient_noise_win_crowd_cheer);
-					mYouWinTextView.setText(getString(R.string.matchTie));
-					mYouWinTextView.setVisibility(View.VISIBLE);
-//					mYouWinTextView.startAnimation(animation);
-			}
-		});
-	}
-
 	
-
-	public void setCurrentRound(final int score){
-		Handler handler = new Handler(Looper.getMainLooper());
-		handler.post(new Runnable() {
-			@Override
-			public void run() {
-				mCurrentScoreTextView.setVisibility(View.VISIBLE);
-				mCurrentScoreTextView.setText(getString(R.string.gameScoreTxt)+" "+score);
-			}
-		});
-
-	}
 }
