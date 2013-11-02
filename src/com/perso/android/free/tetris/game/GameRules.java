@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.perso.android.free.tetris.game.backend.Board;
 import com.perso.android.free.tetris.game.backend.Piece;
+import com.perso.android.free.tetris.game.backend.PieceFactory;
 import com.perso.android.free.tetris.game.event.GameOverEvent;
 import com.perso.android.free.tetris.game.event.GeneratePieceEvent;
 import com.perso.android.free.tetris.game.view.GameView;
@@ -147,6 +148,10 @@ public class GameRules {
 			mCurrentPiece.rotatePiece();
 		}
 		
+	}
+
+	public void generatePiece() {
+		mCurrentPiece = PieceFactory.getRandomPiece();
 	}
 
 }

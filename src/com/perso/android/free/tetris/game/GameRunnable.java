@@ -1,6 +1,5 @@
 package com.perso.android.free.tetris.game;
 
-import java.util.Timer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import android.content.Context;
@@ -10,6 +9,11 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 
 import com.perso.android.free.tetris.game.event.GameEvent;
+import com.perso.android.free.tetris.game.event.GameOverEvent;
+import com.perso.android.free.tetris.game.event.GeneratePieceEvent;
+import com.perso.android.free.tetris.game.event.MoveDownEvent;
+import com.perso.android.free.tetris.game.event.MoveLeftEvent;
+import com.perso.android.free.tetris.game.event.MoveRightEvent;
 import com.perso.android.free.tetris.game.event.RotateEvent;
 import com.perso.android.free.tetris.game.view.GameView;
 
@@ -43,6 +47,8 @@ public class GameRunnable implements Runnable {
 	private GameView mGameView;
 	/** Handle to the surface manager object we interact with */
 	private SurfaceHolder mSurfaceHolder;
+	/** Handle the dropping piece*/
+	private DroppingPieceRunnable mDroppingPieceRunnable;
 
 	/** game loop delay*/
 	private long mDelay = 33;
@@ -54,8 +60,6 @@ public class GameRunnable implements Runnable {
 
 	/** timers for typing enter */
 	private long mNowTime = 0;
-	/** timer managing thrower throw */
-	private Timer mTimer = null;
 
 	/** if we have to redraw */
 	private boolean mReDraw = false;
@@ -78,7 +82,6 @@ public class GameRunnable implements Runnable {
 		mSurfaceHolder = surfaceHolder;
 		mGameRules = new GameRules(c);
 		setState(STATE_LOADING);
-		mTimer = new Timer();
 	}
 
 	@Override
@@ -146,8 +149,10 @@ public class GameRunnable implements Runnable {
 		mNowTime = 0;
 
 		mGameRules.initBoard();
-
+		mDroppingPieceRunnable = new DroppingPieceRunnable(this, 400);
 		//start the game
+		Thread t = new Thread(mDroppingPieceRunnable);
+		t.start();
 		mReDraw = true;
 		setState(STATE_RUNNING);
 	}
@@ -169,18 +174,28 @@ public class GameRunnable implements Runnable {
 				else if(event instanceof RotateEvent){
 					mGameRules.rotate();
 				}
+				else if(event instanceof MoveLeftEvent){
+					mGameRules.moveLeft();
+				}
+				else if(event instanceof MoveRightEvent){
+					mGameRules.moveRight();
+				}
+				else if(event instanceof MoveDownEvent){
+					if(mGameRules.canMoveDown()){
+						mGameRules.moveDown();
+					}
+					else {
+						mGameRules.onPieceFinishedMoving();
+					}
+				}
+				else if(event instanceof GeneratePieceEvent){
+					mGameRules.generatePiece();
+				}
+				else if(event instanceof GameOverEvent){
+					setState(STATE_GAME_OVER);
+					mDroppingPieceRunnable.stop();
+				}
 			}
-			//post the next event depending of current situation
-			//or change the situation if needed
-			//			int state = getRaceState();
-			//			if(state == RACE_STATE_INIT_THROW){
-			//				mGameRules.initThrow();
-			//				mReDraw = true;
-			//			}
-			//			else if(state == RACE_STATE_END_GAME){
-			//				//game is finished
-			//				setState(STATE_GAME_OVER);
-			//			}
 		}
 	}
 
