@@ -56,6 +56,7 @@ public class GameActivity extends Activity implements View.OnClickListener{
 	protected void onStop() {
 		super.onStop();
 		Log.d(TAG, "asked to stop activity");
+		mGameRunnable.clean();
 		mGameRunnable.setInBackground(true);
 	}
 

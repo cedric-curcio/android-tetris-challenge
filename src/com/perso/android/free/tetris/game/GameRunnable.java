@@ -157,9 +157,10 @@ public class GameRunnable implements Runnable {
 			@Override
 			public void run() {
 				sendGameEvent(new MoveDownEvent());
+				Log.d(TAG, "Throwing MoveDownEvent");
 			}
 		};
-		mTimer.schedule(mDroppingPieceTask, 300, 500);
+		mTimer.schedule(mDroppingPieceTask, 300, 660);
 		sendGameEvent(new GeneratePieceEvent());
 		//start the game
 //		Thread t = new Thread(mDroppingPieceRunnable);
@@ -294,4 +295,10 @@ public class GameRunnable implements Runnable {
 		return mGameRules;
 	}
 
+	public void clean() {
+		// TODO Auto-generated method stub
+		mDroppingPieceTask.cancel();
+		mTimer.cancel();
+	}
+	
 }
