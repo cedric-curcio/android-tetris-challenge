@@ -87,6 +87,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 		mGameThread = new Thread(mGameRunnable);
 		clearPaint.setColor(Color.BLACK);
 		mContext = context;
+		GameViewTouchListener touchListener = new GameViewTouchListener(context, mGameRunnable); 
+		setOnTouchListener(touchListener);
 		mLoadThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
