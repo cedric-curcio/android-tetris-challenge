@@ -154,4 +154,8 @@ public class GameRules {
 		mCurrentPiece = PieceFactory.getRandomPiece();
 	}
 
+	public Piece getCurrentPiece() {
+		return mCurrentPiece;
+	}
+
 }

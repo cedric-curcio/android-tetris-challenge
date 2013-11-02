@@ -93,7 +93,6 @@ public class GameRunnable implements Runnable {
 		if(mRun){
 			mNowTime = System.currentTimeMillis();
 			if(mGameState == STATE_LOADING){
-				//we will set a waiting bar
 				checkLoading();
 			}
 			else if(mGameState == STATE_PLAY){
@@ -147,7 +146,6 @@ public class GameRunnable implements Runnable {
 		mEventQueue.clear();
 		deltaPausedTime=0;
 		mNowTime = 0;
-
 		mGameRules.initBoard();
 		mDroppingPieceRunnable = new DroppingPieceRunnable(this, 400);
 		//start the game
@@ -275,6 +273,10 @@ public class GameRunnable implements Runnable {
 
 	public void setRedraw(boolean b) {
 		mReDraw = b;
+	}
+	
+	public GameRules getGameRules(){
+		return mGameRules;
 	}
 
 }

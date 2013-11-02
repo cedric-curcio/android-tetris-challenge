@@ -1,15 +1,11 @@
 package com.perso.android.free.tetris.game.view;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -20,6 +16,8 @@ import android.view.Window;
 import com.perso.android.free.tetris.R;
 import com.perso.android.free.tetris.game.GameActivity;
 import com.perso.android.free.tetris.game.GameRunnable;
+import com.perso.android.free.tetris.game.backend.Board;
+import com.perso.android.free.tetris.game.backend.Piece;
 
 /**
  * The game view where the field, 
@@ -44,8 +42,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 	private Thread mLoadThread;
 
 	/** the paints */
-	private Paint teamAPaint = new Paint();
-	private Paint teamBPaint = new Paint();
+	private Paint mTeamAPaint = new Paint();
+	private Paint mTeamBPaint = new Paint();
 	private Paint clearPaint = new Paint();
 	private Paint mGreyPaint = new Paint(); //when we pause, when game is over
 	private Paint mMessagesPaint = new Paint();
@@ -53,23 +51,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint mNotificationPaint = new Paint();
 	private Paint mNotificationShadowPaint = new Paint();
 
-	private RectF mNotificationRect = new RectF();
 	private Rect mBounds = new Rect();
 	private Rect mSurfaceRect;
-	private RectF xlargeDestRect = new RectF();
-
-	/** our bitmaps*/
-	private Bitmap mFieldBitmap;
-	private Bitmap mBaseBitmap;
 
 	/** Current height of the surface/canvas*/
 	private int mCanvasHeight = 1;
 	/** Current width of the surface/canvas*/
 	private int mCanvasWidth = 1;
 
-	private ArrayList<String> mOtherMessageList;
-	private Object messageLock = new Object();
-	private boolean mIsMessageToDisplay = false;
+	private Rect[][] mRectTable;
 
 	private boolean mIsReady = false; // loading is finished
 	private boolean mIsPausedOneDraw = false;
@@ -82,7 +72,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 		// register our interest in hearing about changes to our surface
 		mSurfaceHolder = getHolder();
 		mSurfaceHolder.addCallback(this);
-		mOtherMessageList = new ArrayList<String>();
 		mGameRunnable = new GameRunnable(context, this, mSurfaceHolder);
 		mGameThread = new Thread(mGameRunnable);
 		clearPaint.setColor(Color.BLACK);
@@ -95,15 +84,28 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 				loadAll();
 			}
 			private void loadAll(){
+
+				int w = ((GameActivity)mContext).getIntent().getIntExtra("boardWidth", -1);
+				int h = ((GameActivity)mContext).getIntent().getIntExtra("boardWeight", -1);
+				if(w <= 5 || h <= 5 ){
+					w = 10;
+					h= 18;
+				}
+				int tileSize1 = mCanvasHeight/h;
+				int tileSize2 = mCanvasWidth/w;
+				int tileSize  = tileSize1<tileSize2?tileSize2:tileSize1;
+				mRectTable = new Rect[h][w];
+				for(int j = 0 ; j<h ; j++){
+					for(int i = 0 ; i<w ; i++){
+						mRectTable[j][i] = new Rect();
+						mRectTable[j][i].bottom = (j+1) * tileSize;
+						mRectTable[j][i].top = j * tileSize;
+						mRectTable[j][i].right = (i+1) * tileSize;
+						mRectTable[j][i].left = i * tileSize;
+					}
+				}
 				load(context.getResources());
-				if(checkAll()){
-					mIsReady = true;
-				}
-				else{
-					mIsReady = false;
-					loadAll();
-					Log.e(TAG, "Not all data was loaded - redo");
-				}
+				mIsReady = true;
 			}
 		});
 		//		isXlarge = Boolean.parseBoolean(mContext.getString(R.string.isXlarge));
@@ -139,6 +141,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 		mSurfaceRect.right = mCanvasWidth;
 		mSurfaceRect.bottom = mCanvasHeight;
 
+
+
 		DisplayMetrics metrics = new DisplayMetrics();
 		((GameActivity)mContext).getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
@@ -171,7 +175,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 	public int getCanvasHeight() {
 		return mCanvasHeight;
 	}
-	
+
 	public void drawAll(Canvas canvas) {
 		if(canvas == null){
 			return;
@@ -192,49 +196,30 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 			else if(mGameRunnable.isReDraw() && !mIsPausedOneDraw ){
 				//clear all
 				canvas.drawRect(0, 0, mCanvasWidth, mCanvasHeight, clearPaint);
-			}
+
+				//draw the board
+				Board board = Board.getInstance();
+				for(int j=0 ; j<board.getHeightUnit() ; j++){
+					for(int i=0 ; i<board.getWidthUnit() ; i++){
+						if(board.getBoard()[j][i]){
+							canvas.drawRect(mRectTable[j][i], mTeamAPaint);
+						}
+					}
+				}
+				//draw the piece
+				Piece p = mGameRunnable.getGameRules().getCurrentPiece();
+				for(int j=0 ; j<p.getShapeHeightLength() ; j++){
+					for(int i=0 ; i<p.getShapeWidthLength() ; i++){
+						if(p.getShape()[j][i]){
+							mTeamBPaint.setColor(p.getColor());
+							canvas.drawRect(mRectTable[p.getY()+j][p.getX()+i], mTeamBPaint);
+						}
+					}
+				}	
+			}	
 		}
 	}
 
-	//TODO clean if no tutorial 
-	private void drawMessage(Canvas canvas, ArrayList<String> messages) {
-		int nbLine = messages.size();
-		mMessagesPaint.setTextSize(40);
-		//draw top rect which will contains the message
-
-		canvas.drawRect(mNotificationRect, mNotificationPaint);
-		canvas.drawRect(mNotificationRect, mNotificationBorderPaint);
-		canvas.drawRect(mNotificationRect, mNotificationShadowPaint);
-
-
-		float paintSize = 100, tmpPaintSize;
-		float maxWidth = mNotificationRect.width() - 4;
-		for(String s:messages){
-			tmpPaintSize = checkPaintSize( maxWidth,s, mMessagesPaint);
-			if(tmpPaintSize<paintSize){
-				paintSize = tmpPaintSize;
-				mMessagesPaint.setTextSize(paintSize);
-			}
-		}
-		//calculate text position
-		mMessagesPaint.getTextBounds(messages.get(0), 0, messages.get(0).length(), mBounds);
-		float textW;
-		float textH = mBounds.height();
-
-		float xText;
-		float ySpan = (int) (((mNotificationRect.height() - 5 ) - textH*nbLine)/(nbLine+1));
-		float yText = mNotificationRect.top ;
-		for(String s:messages){
-			mMessagesPaint.getTextBounds(s, 0, s.length(), mBounds);
-			//			textH = mBounds.height();
-			textW = mBounds.width();
-			yText = yText + ySpan + textH;
-			xText = (mNotificationRect.left +2) + (((mNotificationRect.right-2) -  (mNotificationRect.left +2)) - textW)/2;
-			canvas.drawText(s, xText, yText, mMessagesPaint);
-
-		}
-
-	}
 
 	//TODO clean if no text in box
 	private float checkPaintSize(float maxWidth, String s, Paint paint) {
@@ -251,7 +236,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 		return retSize;
 	}
 
-	
+
 	//TODO clean if no text in box
 	private void checkNameSize(String name, float maxWidth,
 			Paint paint) {
@@ -265,7 +250,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 			if(newName.equals(name)){
 				return;
 			}
-//			team.setDisplayName(newName);
+			//			team.setDisplayName(newName);
 			String nextName = "";//team.getDisplayName();
 			checkNameSize(nextName, maxWidth,paint);
 		}
@@ -277,7 +262,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 
 		//1 draw black layer 
 		canvas.drawColor(mGreyPaint.getColor());
-		
+
 		//message gameover
 		canvas.drawText("GAME OVER", mCanvasWidth/2, mCanvasHeight/2, mMessagesPaint);
 	}
@@ -300,9 +285,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 	 * Release memory (mostly bitmaps) and stop thread.
 	 */
 	public void cleanUp() {
-		if(mFieldBitmap!=null){
-			mFieldBitmap.recycle();
-		}
 
 		boolean retry = true;
 
@@ -322,21 +304,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 	private void load(Resources res){
 		int mScoreTextSize = 10;//res.getDimension(R.dimen.scoreSize);
 
-		teamAPaint.setColor(Color.RED);
-		teamAPaint.setTextSize(mScoreTextSize);
-		teamAPaint.setAntiAlias(true);
-		teamBPaint.setColor(Color.BLUE);
-		teamBPaint.setTextSize(mScoreTextSize);
-		teamBPaint.setAntiAlias(true);
+		mTeamAPaint.setColor(Color.RED);
+		mTeamAPaint.setTextSize(mScoreTextSize);
+		mTeamAPaint.setAntiAlias(true);
+		mTeamBPaint.setColor(Color.BLUE);
+		mTeamBPaint.setTextSize(mScoreTextSize);
+		mTeamBPaint.setAntiAlias(true);
 
-//		mMessagesPaint.setColor(res.getColor(R.color.messageColor));
+		//		mMessagesPaint.setColor(res.getColor(R.color.messageColor));
 		mMessagesPaint.setTextSize(mScoreTextSize);
 		mMessagesPaint.setAntiAlias(true);
-
-		mNotificationRect.top = mCanvasHeight/11;
-		mNotificationRect.bottom = mNotificationRect.top*3;
-		mNotificationRect.left = 	mCanvasWidth/5;
-		mNotificationRect.right = mNotificationRect.left*4; 
 
 		mNotificationBorderPaint.setAntiAlias(true);
 		mNotificationBorderPaint.setStyle(Paint.Style.STROKE);
@@ -360,14 +337,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 
 	}
 
-	private boolean checkAll(){
-		boolean isAllLoaded = true;
-		if(mBaseBitmap == null || mFieldBitmap==null){
-			isAllLoaded = false;
-		}
-		return isAllLoaded;
-	}
-
 	/**
 	 * Return true if all the bitmap have been loaded.
 	 * @return
@@ -380,41 +349,4 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 		mIsPausedOneDraw = b;
 	}
 
-	
-	/**
-	 * Tutorial stuff remove it if no tutorial.
-	 */
-	
-	/**
-	 * Add tutorial message which whill be displayed in a box
-	 * @param ss the messages to display.
-	 */
-	public void addMessageToDisplay(String ...ss){
-		synchronized (messageLock) {
-			for(String s:ss){
-				mOtherMessageList.add(s);
-			}
-			mIsMessageToDisplay = true;
-		}
-	}
-
-	public void stopShowingMessage(){
-		synchronized (messageLock) {
-			mIsMessageToDisplay = false;
-			mOtherMessageList.clear();
-		}
-	}
-
-
-	public void showZone(RectF rect){
-		synchronized (messageLock) {
-			Rect rectToShow = new Rect();
-			rectToShow.top = (int) rect.top - 5;
-			rectToShow.left = (int) rect.left - 5;
-			rectToShow.bottom = (int) rect.bottom +5;
-			rectToShow.right = (int) rect.right +5;
-//			mRectToShowList.add(rectToShow);
-//			mIsObjectToShow = true;
-		}
-	}
 }

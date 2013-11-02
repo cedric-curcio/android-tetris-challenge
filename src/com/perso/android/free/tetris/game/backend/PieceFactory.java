@@ -2,6 +2,8 @@ package com.perso.android.free.tetris.game.backend;
 
 import java.util.Random;
 
+import android.graphics.Color;
+
 /**
  * Generate the tetris pieces.
  * Since we use a enum, new piece can be designed here.
@@ -27,7 +29,7 @@ public class PieceFactory {
 			@Override
 			public Piece generatePiece() {
 				boolean tab[][] = {{true, true},{true,true}};
-				return new Piece(tab);
+				return new Piece(tab, Color.RED);
 			}
 		},
 		/**
@@ -41,7 +43,7 @@ public class PieceFactory {
 			@Override
 			public Piece generatePiece() {
 				boolean tab[][] = {{true},{true},{true},{true}};
-				return new Piece(tab);
+				return new Piece(tab, Color.BLUE);
 			}
 		},
 		/**
@@ -54,7 +56,7 @@ public class PieceFactory {
 			@Override
 			public Piece generatePiece() {
 				boolean tab[][] = {{true, false},{true, false},{true,true}};
-				return new Piece(tab);
+				return new Piece(tab, Color.DKGRAY);
 			}
 		},
 		/**
@@ -67,7 +69,7 @@ public class PieceFactory {
 			@Override
 			public Piece generatePiece() {
 				boolean tab[][] = {{false, true},{false, true},{true,true}};
-				return new Piece(tab);
+				return new Piece(tab, Color.MAGENTA);
 			}
 		},
 		/**
@@ -79,7 +81,7 @@ public class PieceFactory {
 			@Override
 			public Piece generatePiece() {
 				boolean tab[][] = {{true, true, true},{false, true, false}};
-				return new Piece(tab);
+				return new Piece(tab, Color.GREEN);
 			}
 		},
 		/**
@@ -91,7 +93,7 @@ public class PieceFactory {
 			@Override
 			public Piece generatePiece() {
 				boolean tab[][] = {{false, true, true},{true, true, false}};
-				return new Piece(tab);
+				return new Piece(tab, Color.YELLOW);
 			}
 		},
 		/**
@@ -103,7 +105,7 @@ public class PieceFactory {
 			@Override
 			public Piece generatePiece() {
 				boolean tab[][] = {{true, true, false},{false, true, true}};
-				return new Piece(tab);
+				return new Piece(tab, Color.CYAN);
 			}
 		};
 		public abstract Piece generatePiece();

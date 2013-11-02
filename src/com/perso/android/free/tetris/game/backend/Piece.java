@@ -11,16 +11,18 @@ public class Piece {
 	private int mX;
 	private int mY;
 	private boolean mShape[][];
+	private int mColor;
 	
 
 	/**
 	 * basic constructor for a piece, piece starts at (0;0)
 	 * @param shape the shape of the piece;
 	 */
-	public Piece(boolean[][] shape){
+	public Piece(boolean[][] shape, int color){
 		mX = 0;
 		mY = 0;
 		mShape = shape;
+		mColor = color;
 	}
 
 	public Piece(Piece currentPiece) {
@@ -69,7 +71,10 @@ public class Piece {
 	public int getY() {
 		return mY;
 	}
-
+	
+	public int getColor(){
+		return mColor;
+	}
 
 	public boolean[][] getShape() {
 		return mShape;
