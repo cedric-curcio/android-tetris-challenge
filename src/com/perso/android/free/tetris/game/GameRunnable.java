@@ -1,8 +1,11 @@
 package com.perso.android.free.tetris.game;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import android.content.Context;
+import android.content.PeriodicSync;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.util.Log;
@@ -52,13 +55,15 @@ public class GameRunnable implements Runnable {
 
 	/** game loop delay*/
 	private long mDelay = 33;
-
+	
+	/** dropping piece timer and task*/
+	private Timer mTimer;;
+	private TimerTask mDroppingPieceTask;
 
 	private long mLastPauseTime;
-	private long mPausedDelay = 0;
 	private long deltaPausedTime = 0;
 
-	/** timers for typing enter */
+	/** now time */
 	private long mNowTime = 0;
 
 	/** if we have to redraw */
@@ -80,7 +85,8 @@ public class GameRunnable implements Runnable {
 		mContext = c;
 		mGameView = v;
 		mSurfaceHolder = surfaceHolder;
-		mGameRules = new GameRules(c);
+		mGameRules = new GameRules(c, this);
+		mTimer = new Timer();
 		setState(STATE_LOADING);
 	}
 
@@ -97,8 +103,6 @@ public class GameRunnable implements Runnable {
 			}
 			else if(mGameState == STATE_PLAY){
 				initGame();//first enter
-			}
-			else if(mGameState == STATE_GAME_OVER){
 			}
 			else if (mGameState == STATE_RUNNING) {
 				updateGameState();
@@ -143,14 +147,25 @@ public class GameRunnable implements Runnable {
 
 	private void initGame() {
 		//clean all
+		
 		mEventQueue.clear();
 		deltaPausedTime=0;
 		mNowTime = 0;
 		mGameRules.initBoard();
-		mDroppingPieceRunnable = new DroppingPieceRunnable(this, 400);
+//		mDroppingPieceRunnable = new DroppingPieceRunnable(this, 500);
+		
+		 mDroppingPieceTask = new TimerTask() {
+			
+			@Override
+			public void run() {
+				sendGameEvent(new MoveDownEvent());
+			}
+		};
+		mTimer.schedule(mDroppingPieceTask, 300, 500);
+		sendGameEvent(new GeneratePieceEvent());
 		//start the game
-		Thread t = new Thread(mDroppingPieceRunnable);
-		t.start();
+//		Thread t = new Thread(mDroppingPieceRunnable);
+//		t.start();
 		mReDraw = true;
 		setState(STATE_RUNNING);
 	}
@@ -159,7 +174,6 @@ public class GameRunnable implements Runnable {
 	 * Update all events here
 	 */
 	protected void updateGameState() {
-		GameEvent nextBallMoveEvent = null;
 		synchronized (mSurfaceHolder) {
 			if(mEventQueue.size()>0){
 				mReDraw = true;
@@ -179,11 +193,13 @@ public class GameRunnable implements Runnable {
 					mGameRules.moveRight();
 				}
 				else if(event instanceof MoveDownEvent){
-					if(mGameRules.canMoveDown()){
-						mGameRules.moveDown();
-					}
-					else {
-						mGameRules.onPieceFinishedMoving();
+					if(mGameRules.getCurrentPiece() != null){
+						if(mGameRules.canMoveDown()){
+							mGameRules.moveDown();
+						}
+						else {
+							mGameRules.onPieceFinishedMoving();
+						}
 					}
 				}
 				else if(event instanceof GeneratePieceEvent){
@@ -191,7 +207,9 @@ public class GameRunnable implements Runnable {
 				}
 				else if(event instanceof GameOverEvent){
 					setState(STATE_GAME_OVER);
-					mDroppingPieceRunnable.stop();
+					mDroppingPieceTask.cancel();
+					mTimer.purge();
+//					mDroppingPieceRunnable.stop();
 				}
 			}
 		}
@@ -274,7 +292,7 @@ public class GameRunnable implements Runnable {
 	public void setRedraw(boolean b) {
 		mReDraw = b;
 	}
-	
+
 	public GameRules getGameRules(){
 		return mGameRules;
 	}

@@ -3,6 +3,7 @@ package com.perso.android.free.tetris;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,6 +49,7 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 			intent = new Intent(this, GameActivity.class);
 			intent.putExtra("boardWidth", Integer.parseInt(mEditWidth.getText().toString()));
 			intent.putExtra("boardHeight", Integer.parseInt(mEditHeight.getText().toString()));
+			Log.d(TAG, "input : w = "+mEditWidth.getText().toString()+""+mEditHeight.getText().toString());
 			startActivity(intent);
 		}
 	}

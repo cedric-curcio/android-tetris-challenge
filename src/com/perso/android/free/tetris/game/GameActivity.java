@@ -1,17 +1,12 @@
 package com.perso.android.free.tetris.game;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
-import com.google.ads.AdView;
 import com.perso.android.free.tetris.R;
 import com.perso.android.free.tetris.game.view.GameView;
 

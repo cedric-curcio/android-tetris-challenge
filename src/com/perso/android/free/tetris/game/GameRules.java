@@ -17,8 +17,8 @@ import com.perso.android.free.tetris.game.view.GameView;
  */
 public class GameRules {
 
-	public static final int DEFAULT_BOARD_WIDTH = 18;
-	public static final int DEFAULT_BOARD_HEIGHT = 10; 
+	public static final int DEFAULT_BOARD_WIDTH = 10;
+	public static final int DEFAULT_BOARD_HEIGHT = 18; 
 
 	private GameView mGameView;
 	private GameRunnable mGameRunnable;
@@ -27,8 +27,9 @@ public class GameRules {
 	//TODO add the game object here
 	private Piece mCurrentPiece;
 
-	public GameRules(Context c){
+	public GameRules(Context c, GameRunnable run){
 		mContext = c;
+		mGameRunnable = run;
 	}
 
 	/**
@@ -36,7 +37,7 @@ public class GameRules {
 	 */
 	public void initBoard(){
 		int w = ((GameActivity)mContext).getIntent().getIntExtra("boardWidth", -1);
-		int h = ((GameActivity)mContext).getIntent().getIntExtra("boardWeight", -1);
+		int h = ((GameActivity)mContext).getIntent().getIntExtra("boardHeight", -1);
 		if(w <= 5 || h <= 5 ){
 			Board.getInstance().init(DEFAULT_BOARD_WIDTH, DEFAULT_BOARD_HEIGHT);
 		}
@@ -107,7 +108,12 @@ public class GameRules {
 		boolean [][] board = Board.getInstance().getBoard();
 		for(int j = 0; j<piece.getShapeHeightLength() ;j++){
 			for(int i = 0; i<piece.getShapeWidthLength() ;i++){
-				if(board[j+piece.getY()+dy][i+piece.getX()+dx]==piece.getShape()[j][i]){
+				if(j+piece.getY()+dy < board.length && i+piece.getX()+dx<board[0].length){
+					if(board[j+piece.getY()+dy][i+piece.getX()+dx]== true && true==piece.getShape()[j][i]){
+						return true;
+					}
+				}
+				else {
 					return true;
 				}
 			}
@@ -145,9 +151,16 @@ public class GameRules {
 		Piece p = new Piece(mCurrentPiece);
 		p.rotatePiece();
 		if(!isCollision(p, 0, 0)){
+
+			while(p.getX()+p.getShapeWidthLength()> Board.getInstance().getWidthUnit()){
+				p.moveLeft();
+				mCurrentPiece.moveLeft();
+			}
+			
 			mCurrentPiece.rotatePiece();
+
 		}
-		
+
 	}
 
 	public void generatePiece() {

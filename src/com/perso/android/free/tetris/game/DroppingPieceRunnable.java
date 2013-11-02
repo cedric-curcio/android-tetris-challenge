@@ -21,6 +21,7 @@ public class DroppingPieceRunnable implements Runnable {
 	
 	@Override
 	public void run() {
+		
 		while(true){
 			if(mIsStopped){
 				break;

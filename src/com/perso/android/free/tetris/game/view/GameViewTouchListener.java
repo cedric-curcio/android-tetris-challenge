@@ -7,6 +7,7 @@ import com.perso.android.free.tetris.game.event.MoveRightEvent;
 import com.perso.android.free.tetris.game.event.RotateEvent;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
@@ -20,12 +21,14 @@ import android.view.View.OnTouchListener;
  *
  */
 public class GameViewTouchListener implements OnTouchListener {
-	
+
+	private static final String TAG = GameViewTouchListener.class.getSimpleName();
 	private final GestureDetector mGestureDetector;
 	private GameRunnable mGameRunnable;
 
 	public GameViewTouchListener(Context context, GameRunnable run) {
 		mGestureDetector = new GestureDetector(context, new GestureListener());
+		mGameRunnable = run;
 	}
 	@Override
 	public boolean onTouch(View v, MotionEvent motionEvent) {
@@ -41,6 +44,7 @@ public class GameViewTouchListener implements OnTouchListener {
 		@Override
 		public boolean onSingleTapUp(MotionEvent e) {
 			mGameRunnable.sendGameEvent(new RotateEvent());
+			Log.d(TAG, "rotate Piece");
 			return super.onSingleTapUp(e);
 		}
 
@@ -80,10 +84,12 @@ public class GameViewTouchListener implements OnTouchListener {
 	}
 
 	public void onSwipeRight() {
+		Log.d(TAG, "MoveRightEvent Piece");
 		mGameRunnable.sendGameEvent(new MoveRightEvent());
 	}
 
 	public void onSwipeLeft() {
+		Log.d(TAG, "MoveLeftEvent Piece");
 		mGameRunnable.sendGameEvent(new MoveLeftEvent());
 	}
 
@@ -91,6 +97,7 @@ public class GameViewTouchListener implements OnTouchListener {
 	}
 
 	public void onSwipeBottom() {
+		Log.d(TAG, "MoveDownEvent Piece");
 		mGameRunnable.sendGameEvent(new MoveDownEvent());
 	}
 }

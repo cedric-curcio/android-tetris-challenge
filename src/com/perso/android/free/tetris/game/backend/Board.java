@@ -39,7 +39,7 @@ public class Board {
 			}
 		}
 	}
-	
+
 	/**
 	 * Once a piece has stopped moving, set it on the board.
 	 * @param p
@@ -47,7 +47,9 @@ public class Board {
 	public void setPiece(Piece p){
 		for(int j = 0; j<p.getShapeHeightLength() ;j++){
 			for(int i = 0; i<p.getShapeWidthLength() ;i++){
-				mBoard[j+p.getY()][i+p.getX()]=p.getShape()[j][i]; 
+				if(!mBoard[j+p.getY()][i+p.getX()]){
+					mBoard[j+p.getY()][i+p.getX()]=p.getShape()[j][i];
+				}
 			}
 		}
 	}
@@ -63,7 +65,7 @@ public class Board {
 	public boolean[][] getBoard() {
 		return mBoard;
 	}
-	
-	
-	
+
+
+
 }

@@ -86,14 +86,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 			private void loadAll(){
 
 				int w = ((GameActivity)mContext).getIntent().getIntExtra("boardWidth", -1);
-				int h = ((GameActivity)mContext).getIntent().getIntExtra("boardWeight", -1);
+				int h = ((GameActivity)mContext).getIntent().getIntExtra("boardHeight", -1);
 				if(w <= 5 || h <= 5 ){
 					w = 10;
-					h= 18;
+					h = 18;
 				}
 				int tileSize1 = mCanvasHeight/h;
 				int tileSize2 = mCanvasWidth/w;
-				int tileSize  = tileSize1<tileSize2?tileSize2:tileSize1;
+				int tileSize  = tileSize1<tileSize2?tileSize1:tileSize2;
 				mRectTable = new Rect[h][w];
 				for(int j = 0 ; j<h ; j++){
 					for(int i = 0 ; i<w ; i++){
@@ -207,15 +207,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 					}
 				}
 				//draw the piece
+
 				Piece p = mGameRunnable.getGameRules().getCurrentPiece();
-				for(int j=0 ; j<p.getShapeHeightLength() ; j++){
-					for(int i=0 ; i<p.getShapeWidthLength() ; i++){
-						if(p.getShape()[j][i]){
-							mTeamBPaint.setColor(p.getColor());
-							canvas.drawRect(mRectTable[p.getY()+j][p.getX()+i], mTeamBPaint);
+				if(p != null){
+					for(int j=0 ; j<p.getShapeHeightLength() ; j++){
+						for(int i=0 ; i<p.getShapeWidthLength() ; i++){
+							if(p.getShape()[j][i]){
+								mTeamBPaint.setColor(p.getColor());
+								canvas.drawRect(mRectTable[p.getY()+j][p.getX()+i], mTeamBPaint);
+							}
 						}
-					}
-				}	
+					}	
+				}
 			}	
 		}
 	}
@@ -264,6 +267,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 		canvas.drawColor(mGreyPaint.getColor());
 
 		//message gameover
+		mMessagesPaint.setColor(Color.WHITE);
+		
 		canvas.drawText("GAME OVER", mCanvasWidth/2, mCanvasHeight/2, mMessagesPaint);
 	}
 
@@ -302,7 +307,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	private void load(Resources res){
-		int mScoreTextSize = 10;//res.getDimension(R.dimen.scoreSize);
+		int mScoreTextSize = 20;//res.getDimension(R.dimen.scoreSize);
 
 		mTeamAPaint.setColor(Color.RED);
 		mTeamAPaint.setTextSize(mScoreTextSize);
