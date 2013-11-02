@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.perso.android.free.tetris.engine.SoundManager;
 import com.perso.android.free.tetris.game.GameActivity;
 
 public class HomeActivity extends Activity implements View.OnClickListener{
@@ -32,7 +31,6 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 	 */
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		setContentView(R.layout.home_activity_layout);
 
 		mStartButton = (Button)findViewById(R.id.homeStartButton);
@@ -43,8 +41,6 @@ public class HomeActivity extends Activity implements View.OnClickListener{
 		mAboutView = (TextView) findViewById(R.id.homeAboutInfoTextId);
 		mAboutView.setOnClickListener(this);
 		
-		SoundManager sm = SoundManager.getInstance();
-		sm.init(this);
 	}
 
 	@Override
