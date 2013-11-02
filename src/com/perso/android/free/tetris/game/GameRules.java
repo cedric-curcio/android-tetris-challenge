@@ -94,6 +94,7 @@ public class GameRules {
 		for(int j = line; j>0 ;j--){
 			for(int i = 0; i<Board.getInstance().getWidthUnit() ;i++){
 				board[j][i]=board[j-1][i]; 
+				Board.getInstance().getColorBoard()[j][i]=Board.getInstance().getColorBoard()[j-1][i]; 
 			}
 		}
 	}

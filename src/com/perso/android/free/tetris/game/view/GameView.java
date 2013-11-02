@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Cap;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -70,7 +71,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 		mSurfaceHolder.addCallback(this);
 		mGameRunnable = new GameRunnable(context, this, mSurfaceHolder);
 		mGameThread = new Thread(mGameRunnable);
-		clearPaint.setColor(Color.BLACK);
+		clearPaint.setColor(Color.WHITE);
 		mContext = context;
 		GameViewTouchListener touchListener = new GameViewTouchListener(context, mGameRunnable); 
 		setOnTouchListener(touchListener);
@@ -89,15 +90,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 				}
 				int tileSize1 = mCanvasHeight/h;
 				int tileSize2 = mCanvasWidth/w;
-				int tileSize  = tileSize1<tileSize2?tileSize1:tileSize2;
+//				int tileSize  = tileSize1<tileSize2?tileSize1:tileSize2;
 				mRectTable = new Rect[h][w];
 				for(int j = 0 ; j<h ; j++){
 					for(int i = 0 ; i<w ; i++){
 						mRectTable[j][i] = new Rect();
-						mRectTable[j][i].bottom = (j+1) * tileSize;
-						mRectTable[j][i].top = j * tileSize;
-						mRectTable[j][i].right = (i+1) * tileSize;
-						mRectTable[j][i].left = i * tileSize;
+						mRectTable[j][i].bottom = (j+1) * tileSize1;
+						mRectTable[j][i].top = j * tileSize1;
+						mRectTable[j][i].right = (i+1) * tileSize2;
+						mRectTable[j][i].left = i * tileSize2;
 					}
 				}
 				load(context.getResources());
@@ -306,7 +307,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 
 		mBoardPaint.setColor(Color.BLUE);
 		mBoardPaint.setTextSize(mGameOverTextSize);
-		mBoardPaint.setAntiAlias(true);
+		mBoardPaint.setStrokeWidth(2);
+		mBoardPaint.setStrokeCap(Cap.SQUARE);
 
 		mMessagesPaint.setTextSize(mGameOverTextSize);
 		mMessagesPaint.setAntiAlias(true);

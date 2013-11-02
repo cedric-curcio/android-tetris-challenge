@@ -37,9 +37,6 @@ public class Piece {
 	public void rotatePiece(){
 		//create temporary table
 		boolean tmpShape[][] = new boolean[mShape[0].length][mShape.length];
-//		for(int i=0 ; i< mShape[0].length;i++){
-//			tmpShape[i] = new boolean[mShape.length];
-//		}
 		//fill it
 		for(int j = 0 ; j<tmpShape.length ; j++){
 			for(int i = 0 ; i < tmpShape[0].length; i++){

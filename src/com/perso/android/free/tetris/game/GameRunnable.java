@@ -5,7 +5,6 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import android.content.Context;
-import android.content.PeriodicSync;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.util.Log;
@@ -208,7 +207,6 @@ public class GameRunnable implements Runnable {
 					setState(STATE_GAME_OVER);
 					mDroppingPieceTask.cancel();
 					mTimer.purge();
-//					mDroppingPieceRunnable.stop();
 				}
 			}
 		}
