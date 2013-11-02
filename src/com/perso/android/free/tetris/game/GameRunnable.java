@@ -155,7 +155,6 @@ public class GameRunnable implements Runnable {
 //		mDroppingPieceRunnable = new DroppingPieceRunnable(this, 500);
 		
 		 mDroppingPieceTask = new TimerTask() {
-			
 			@Override
 			public void run() {
 				sendGameEvent(new MoveDownEvent());

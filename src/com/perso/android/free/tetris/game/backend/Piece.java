@@ -19,7 +19,7 @@ public class Piece {
 	 * @param shape the shape of the piece;
 	 */
 	public Piece(boolean[][] shape, int color){
-		mX = 0;
+		mX = Board.getInstance().getWidthUnit()/2;
 		mY = 0;
 		mShape = shape;
 		mColor = color;

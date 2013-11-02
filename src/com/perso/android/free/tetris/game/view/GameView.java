@@ -42,14 +42,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 	private Thread mLoadThread;
 
 	/** the paints */
-	private Paint mTeamAPaint = new Paint();
-	private Paint mTeamBPaint = new Paint();
+	private Paint mBoardPaint = new Paint();
 	private Paint clearPaint = new Paint();
 	private Paint mGreyPaint = new Paint(); //when we pause, when game is over
 	private Paint mMessagesPaint = new Paint();
-	private Paint mNotificationBorderPaint = new Paint();
-	private Paint mNotificationPaint = new Paint();
-	private Paint mNotificationShadowPaint = new Paint();
 
 	private Rect mBounds = new Rect();
 	private Rect mSurfaceRect;
@@ -202,7 +198,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 				for(int j=0 ; j<board.getHeightUnit() ; j++){
 					for(int i=0 ; i<board.getWidthUnit() ; i++){
 						if(board.getBoard()[j][i]){
-							canvas.drawRect(mRectTable[j][i], mTeamAPaint);
+							mBoardPaint.setColor(board.getColorBoard()[j][i]);
+							canvas.drawRect(mRectTable[j][i], mBoardPaint);
 						}
 					}
 				}
@@ -213,8 +210,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 					for(int j=0 ; j<p.getShapeHeightLength() ; j++){
 						for(int i=0 ; i<p.getShapeWidthLength() ; i++){
 							if(p.getShape()[j][i]){
-								mTeamBPaint.setColor(p.getColor());
-								canvas.drawRect(mRectTable[p.getY()+j][p.getX()+i], mTeamBPaint);
+								mBoardPaint.setColor(p.getColor());
+								canvas.drawRect(mRectTable[p.getY()+j][p.getX()+i], mBoardPaint);
 							}
 						}
 					}	
@@ -290,9 +287,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 	 * Release memory (mostly bitmaps) and stop thread.
 	 */
 	public void cleanUp() {
-
 		boolean retry = true;
-
 		if(!mGameRunnable.isInBackground()){
 			mGameRunnable.setRunning(false);
 			while (retry) {
@@ -307,39 +302,19 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	private void load(Resources res){
-		int mScoreTextSize = 20;//res.getDimension(R.dimen.scoreSize);
+		int mGameOverTextSize = 30;
 
-		mTeamAPaint.setColor(Color.RED);
-		mTeamAPaint.setTextSize(mScoreTextSize);
-		mTeamAPaint.setAntiAlias(true);
-		mTeamBPaint.setColor(Color.BLUE);
-		mTeamBPaint.setTextSize(mScoreTextSize);
-		mTeamBPaint.setAntiAlias(true);
+		mBoardPaint.setColor(Color.BLUE);
+		mBoardPaint.setTextSize(mGameOverTextSize);
+		mBoardPaint.setAntiAlias(true);
 
-		//		mMessagesPaint.setColor(res.getColor(R.color.messageColor));
-		mMessagesPaint.setTextSize(mScoreTextSize);
+		mMessagesPaint.setTextSize(mGameOverTextSize);
 		mMessagesPaint.setAntiAlias(true);
-
-		mNotificationBorderPaint.setAntiAlias(true);
-		mNotificationBorderPaint.setStyle(Paint.Style.STROKE);
-		mNotificationBorderPaint.setColor(Color.argb(0x4f, 0x33, 0x36, 0x33));
-		mNotificationBorderPaint.setStrokeWidth(1);
-
-		mNotificationPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-		mNotificationPaint.setStyle(Paint.Style.FILL);
-		mNotificationPaint.setColor(Color.argb(0xaf, 0x50, 0x51, 0x51));
-
-		mNotificationShadowPaint.setAntiAlias(true);
-		mNotificationShadowPaint.setStyle(Paint.Style.STROKE);
-		mNotificationShadowPaint.setColor(Color.argb(0x0f, 0x00, 0x11, 0x11));
-		mNotificationShadowPaint.setStrokeWidth(10);
 
 		mGreyPaint.setStyle(Paint.Style.FILL);
 		mGreyPaint.setColor(Color.argb(0xaf, 0x00, 0x11, 0x11));
 
 		mSurfaceRect = new Rect(0,0,mCanvasWidth,mCanvasHeight);
-		//load bitmap
-
 	}
 
 	/**

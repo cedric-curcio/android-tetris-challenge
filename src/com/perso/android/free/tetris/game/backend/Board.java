@@ -12,6 +12,7 @@ public class Board {
 	private int mWidthUnit;
 	private int mHeightUnit;
 	private boolean mBoard [][];
+	private int mColorBoard [][];
 
 	static private Board instance;
 
@@ -31,6 +32,7 @@ public class Board {
 	public void init(int w, int h){
 		mWidthUnit = w;
 		mHeightUnit = h;
+		mColorBoard = new int [h][w];
 		mBoard  = new boolean[h][];
 		for (int j = 0; j<h ; j++){
 			mBoard[j] = new boolean[w];
@@ -49,6 +51,7 @@ public class Board {
 			for(int i = 0; i<p.getShapeWidthLength() ;i++){
 				if(!mBoard[j+p.getY()][i+p.getX()]){
 					mBoard[j+p.getY()][i+p.getX()]=p.getShape()[j][i];
+					mColorBoard[j+p.getY()][i+p.getX()] = p.getColor();
 				}
 			}
 		}
@@ -64,6 +67,10 @@ public class Board {
 
 	public boolean[][] getBoard() {
 		return mBoard;
+	}
+	
+	public int[][] getColorBoard(){
+		return mColorBoard;
 	}
 
 
